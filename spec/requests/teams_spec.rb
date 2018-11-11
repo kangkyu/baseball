@@ -15,4 +15,28 @@ RSpec.describe "Teams", type: :request do
       expect(list_teams.size).to eq(2)
     end
   end
+
+  describe "POST /teams" do
+    context "with valid params" do
+      it "creates a new team" do
+        expect {
+          post teams_path, params: { team: { name: 'Mariners' } }
+        }.to change(Team, :count).by(1)
+      end
+
+      it "renders a JSON response with the new team" do
+        post teams_path, params: { team: { name: 'Mariners' } }
+        expect(response).to have_http_status(:created)
+        expect(response.content_type).to eq('application/json')
+      end
+    end
+
+    context "with invalid params" do
+      it "renders a JSON response with errors for the new team" do
+        post teams_path, params: { team: { name: '' } }
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.content_type).to eq('application/json')
+      end
+    end
+  end
 end
