@@ -8,10 +8,10 @@ RSpec.describe "Teams", type: :request do
     end
 
     it "returns a list of teams" do
-      teams = Team.create([{ name: 'Mariners' }, { name: 'Brewers' }])
+      teams = Team.create! [{ name: 'Mariners' }, { name: 'Brewers' }]
 
       get teams_path
-      list_teams = JSON(response.body)['data']
+      list_teams = JSON(response.body)
       expect(list_teams.size).to eq(2)
     end
   end

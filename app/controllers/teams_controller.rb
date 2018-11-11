@@ -1,6 +1,6 @@
 class TeamsController < ApplicationController
 
   def index
-    head :ok
+    render json: Team.all
   end
 end
