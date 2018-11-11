@@ -1,7 +1,8 @@
 class TeamsController < ApplicationController
 
   def index
-    render json: Team.all
+    @teams = Team.all
+    render formats: :json
   end
 
   def create
