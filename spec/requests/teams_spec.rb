@@ -43,7 +43,7 @@ RSpec.describe "Teams", type: :request do
 
       it "renders a JSON response with the new team" do
         post teams_path, params: { team: { name: 'Mariners' } }
-        expect(response).to have_http_status(:created)
+        expect(response).to have_http_status(201)
         expect(response.content_type).to eq('application/json')
       end
     end
@@ -51,7 +51,7 @@ RSpec.describe "Teams", type: :request do
     context "with invalid params" do
       it "renders a JSON response with errors for the new team" do
         post teams_path, params: { team: { name: '' } }
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(422)
         expect(response.content_type).to eq('application/json')
       end
     end
@@ -80,9 +80,19 @@ RSpec.describe "Teams", type: :request do
       it "renders a JSON response with errors for the the team" do
         team = Team.create! name: 'Mariners'
         put team_path(team.to_param), params: { team: { name: '' } }
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(422)
         expect(response.content_type).to eq('application/json')
       end
+    end
+  end
+
+  describe "DELETE /teams/:id" do
+    it "destroys the existing team" do
+      team = Team.create! name: 'Mariners'
+      expect {
+        delete "/teams/#{team.to_param}"
+        expect(response).to have_http_status(204)
+      }.to change(Team, :count).by(-1)
     end
   end
 end

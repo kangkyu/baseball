@@ -28,6 +28,12 @@ class TeamsController < ApplicationController
     end
   end
 
+  def destroy
+    @team = Team.find(params[:id])
+    @team.destroy
+    head :no_content
+  end
+
   private
 
   def team_params
