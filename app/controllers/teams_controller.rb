@@ -5,10 +5,15 @@ class TeamsController < ApplicationController
     render formats: :json
   end
 
+  def show
+    @team = Team.find(params[:id])
+    render formats: :json
+  end
+
   def create
     @team = Team.new(team_params)
     if @team.save
-      render json: @team, status: :created
+      render :show, status: :created, formats: :json
     else
       render json: @team.errors, status: :unprocessable_entity
     end

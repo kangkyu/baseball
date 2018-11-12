@@ -16,6 +16,23 @@ RSpec.describe "Teams", type: :request do
     end
   end
 
+  describe "GET /teams/:id" do
+    it "returns HTTP status 200" do
+      team = Team.create! name: 'Mariners'
+
+      get "/teams/#{team.to_param}"
+      expect(response).to have_http_status(200)
+    end
+
+    it "returns a team" do
+      team = Team.create! name: 'Mariners'
+
+      get team_path(team.to_param)
+      team = JSON response.body
+      expect(team['name']).to eq('Mariners')
+    end
+  end
+
   describe "POST /teams" do
     context "with valid params" do
       it "creates a new team" do
