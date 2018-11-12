@@ -56,4 +56,33 @@ RSpec.describe "Teams", type: :request do
       end
     end
   end
+
+  describe "PUT /teams/:id" do
+    context "with valid params" do
+      it "updates the team" do
+        team = Team.create! name: 'Mariners'
+        expect {
+          put "/teams/#{team.to_param}", params: { team: { name: 'Dodgers' } }
+          team.reload
+          expect(team.name).to eq('Dodgers')
+        }.not_to change(Team, :count)
+      end
+
+      it "renders a JSON response with the updated team" do
+        team = Team.create! name: 'Mariners'
+        put "/teams/#{team.to_param}", params: { team: { name: 'Dodgers' } }
+        expect(response).to have_http_status(200)
+        expect(response.content_type).to eq('application/json')
+      end
+    end
+
+    context "with invalid params" do
+      it "renders a JSON response with errors for the the team" do
+        team = Team.create! name: 'Mariners'
+        put team_path(team.to_param), params: { team: { name: '' } }
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.content_type).to eq('application/json')
+      end
+    end
+  end
 end

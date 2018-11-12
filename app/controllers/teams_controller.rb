@@ -19,6 +19,15 @@ class TeamsController < ApplicationController
     end
   end
 
+  def update
+    @team = Team.find(params[:id])
+    if @team.update(team_params)
+      render :show, status: :ok, formats: :json
+    else
+      render json: @team.errors, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def team_params
