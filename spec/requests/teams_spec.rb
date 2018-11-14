@@ -31,6 +31,16 @@ RSpec.describe "Teams", type: :request do
       team_json = JSON response.body
       expect(team_json['name']).to eq('Mariners')
     end
+
+    it "returns its players too" do
+      team = Team.create! name: 'Mariners'
+      team.players.push Player.create(name: 'James Paxton'), Player.create(name: 'Mitch Haniger')
+
+      get team_path(team.to_param)
+      team_json = JSON response.body
+      expect(team_json['players']).to be_an Array
+      expect(team_json['players'][0]['name']).to eq('James Paxton')
+    end
   end
 
   describe "POST /teams" do
