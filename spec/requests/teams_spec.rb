@@ -28,8 +28,8 @@ RSpec.describe "Teams", type: :request do
       team = Team.create! name: 'Mariners'
 
       get team_path(team.to_param)
-      team = JSON response.body
-      expect(team['name']).to eq('Mariners')
+      team_json = JSON response.body
+      expect(team_json['name']).to eq('Mariners')
     end
   end
 

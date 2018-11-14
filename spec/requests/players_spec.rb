@@ -13,9 +13,9 @@ RSpec.describe "Players", type: :request do
 
     it "returns a player" do
       get player_path(player.to_param)
-      player = JSON response.body
-      expect(player['name']).to eq('Adrian Gonzalez')
-      expect(player['teamId']).to eq(team.to_param)
+      player_json = JSON response.body
+      expect(player_json['name']).to eq('Adrian Gonzalez')
+      expect(player_json['teamId'].to_s).to eq(player.team.to_param)
     end
   end
 end
