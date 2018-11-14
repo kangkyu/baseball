@@ -2,18 +2,16 @@ class TeamsController < ApplicationController
 
   def index
     @teams = Team.all
-    render formats: :json
   end
 
   def show
     @team = Team.includes(:players).find(params[:id])
-    render formats: :json
   end
 
   def create
     @team = Team.new(team_params)
     if @team.save
-      render :show, status: :created, formats: :json
+      render :show, status: :created
     else
       render json: @team.errors, status: :unprocessable_entity
     end
@@ -22,7 +20,7 @@ class TeamsController < ApplicationController
   def update
     @team = Team.find(params[:id])
     if @team.update(team_params)
-      render :show, status: :ok, formats: :json
+      render :show, status: :ok
     else
       render json: @team.errors, status: :unprocessable_entity
     end

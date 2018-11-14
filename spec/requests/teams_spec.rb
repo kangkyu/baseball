@@ -3,14 +3,14 @@ require 'rails_helper'
 RSpec.describe "Teams", type: :request do
   describe "GET /teams" do
     it "returns HTTP status 200" do
-      get teams_path
+      get teams_path, as: :json
       expect(response).to have_http_status(200)
     end
 
     it "returns a list of teams" do
       teams = Team.create! [{ name: 'Mariners' }, { name: 'Brewers' }]
 
-      get teams_path
+      get teams_path, as: :json
       list_teams = JSON(response.body)
       expect(list_teams.size).to eq(2)
     end
@@ -20,14 +20,14 @@ RSpec.describe "Teams", type: :request do
     it "returns HTTP status 200" do
       team = Team.create! name: 'Mariners'
 
-      get "/teams/#{team.to_param}"
+      get "/teams/#{team.to_param}", as: :json
       expect(response).to have_http_status(200)
     end
 
     it "returns a team" do
       team = Team.create! name: 'Mariners'
 
-      get team_path(team.to_param)
+      get team_path(team.to_param), as: :json
       team_json = JSON response.body
       expect(team_json['name']).to eq('Mariners')
     end
@@ -36,7 +36,7 @@ RSpec.describe "Teams", type: :request do
       team = Team.create! name: 'Mariners'
       team.players.push Player.create(name: 'James Paxton'), Player.create(name: 'Mitch Haniger')
 
-      get team_path(team.to_param)
+      get team_path(team.to_param), as: :json
       team_json = JSON response.body
       expect(team_json['players']).to be_an Array
       expect(team_json['players'][0]['name']).to eq('James Paxton')
@@ -47,12 +47,12 @@ RSpec.describe "Teams", type: :request do
     context "with valid params" do
       it "creates a new team" do
         expect {
-          post teams_path, params: { team: { name: 'Mariners' } }
+          post teams_path, params: { team: { name: 'Mariners' } }, as: :json
         }.to change(Team, :count).by(1)
       end
 
       it "renders a JSON response with the new team" do
-        post teams_path, params: { team: { name: 'Mariners' } }
+        post teams_path, params: { team: { name: 'Mariners' } }, as: :json
         expect(response).to have_http_status(201)
         expect(response.content_type).to eq('application/json')
       end
@@ -60,7 +60,7 @@ RSpec.describe "Teams", type: :request do
 
     context "with invalid params" do
       it "renders a JSON response with errors for the new team" do
-        post teams_path, params: { team: { name: '' } }
+        post teams_path, params: { team: { name: '' } }, as: :json
         expect(response).to have_http_status(422)
         expect(response.content_type).to eq('application/json')
       end
@@ -72,7 +72,7 @@ RSpec.describe "Teams", type: :request do
       it "updates the team" do
         team = Team.create! name: 'Mariners'
         expect {
-          put "/teams/#{team.to_param}", params: { team: { name: 'Dodgers' } }
+          put "/teams/#{team.to_param}", params: { team: { name: 'Dodgers' } }, as: :json
           team.reload
           expect(team.name).to eq('Dodgers')
         }.not_to change(Team, :count)
@@ -80,7 +80,7 @@ RSpec.describe "Teams", type: :request do
 
       it "renders a JSON response with the updated team" do
         team = Team.create! name: 'Mariners'
-        put "/teams/#{team.to_param}", params: { team: { name: 'Dodgers' } }
+        put "/teams/#{team.to_param}", params: { team: { name: 'Dodgers' } }, as: :json
         expect(response).to have_http_status(200)
         expect(response.content_type).to eq('application/json')
       end
