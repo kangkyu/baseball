@@ -1,2 +1,4 @@
-json.key_format! camelize: :lower
-json.extract! @player, :id, :name, :team_id
+json.extract! @player, :id, :name
+json.team do
+  json.name @player.team.name
+end
