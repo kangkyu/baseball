@@ -1,5 +1,5 @@
 class GamesController < ApplicationController
   def show
-    head :ok
+    @game = Game.find(params[:id])
   end
 end
