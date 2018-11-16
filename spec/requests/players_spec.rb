@@ -18,4 +18,11 @@ RSpec.describe "Players", type: :request do
       expect(player_json['team']['name']).to eq('Mets')
     end
   end
+
+  describe "GET /players" do
+    it "returns HTTP status 200" do
+      get players_path, as: :json
+      expect(response).to have_http_status(200)
+    end
+  end
 end

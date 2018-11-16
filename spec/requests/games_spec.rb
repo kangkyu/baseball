@@ -28,4 +28,11 @@ RSpec.describe "Games", type: :request do
       expect(game_json['teams']['away_team']['name']).to eq('Yankees')
     end
   end
+
+  describe "GET /games" do
+    it "returns HTTP status 200" do
+      get games_path, as: :json
+      expect(response).to have_http_status(200)
+    end
+  end
 end
