@@ -4,6 +4,6 @@ class GamesController < ApplicationController
   end
 
   def index
-    @games = Game.all # TODO: get a list of games with their scores
+    @games = Game.all
   end
 end

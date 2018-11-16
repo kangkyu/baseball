@@ -47,5 +47,18 @@ RSpec.describe "Games", type: :request do
       list_games = JSON(response.body)
       expect(list_games.size).to eq(2)
     end
+
+    it "returns a list of games with their scores" do
+      game_1 = Game.create! field: 'Fenway Park', away_team: away_team_1, home_team: home_team
+      game_2 = Game.create! field: 'Fenway Park', away_team: away_team_2, home_team: home_team
+      home_team.players.push Player.create(name: 'Mookie Betts'), Player.create(name: 'Chris Sale')
+      Score.create! player: game_1.home_team.players.take, game: game_1, point: 3
+
+      get games_path, as: :json
+      list_games = JSON(response.body)
+
+      expect(list_games[0]['field']).to eq('Fenway Park')
+      expect(list_games[0]['score']).to eq('0:3')
+    end
   end
 end
