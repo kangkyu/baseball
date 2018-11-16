@@ -3,4 +3,5 @@ Rails.application.routes.draw do
   resources :teams
   resources :players, only: [:show, :index]
   resources :games, only: [:show, :index]
+  resources :scores, only: [:create, :destroy]
 end
