@@ -5,6 +5,6 @@ class PlayersController < ApplicationController
   end
 
   def index
-    @players = Player.all # TODO: get top scoring players
+    @players = Player.includes(:scores).sort_by {|player| -player.total_scores}.first(10)
   end
 end
