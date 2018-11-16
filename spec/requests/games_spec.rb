@@ -30,9 +30,22 @@ RSpec.describe "Games", type: :request do
   end
 
   describe "GET /games" do
+    let(:away_team_1) { Team.create! name: 'Yankees' }
+    let(:away_team_2) { Team.create! name: 'Brewers' }
+    let(:home_team) { Team.create! name: 'Red Sox' }
+
     it "returns HTTP status 200" do
       get games_path, as: :json
       expect(response).to have_http_status(200)
+    end
+
+    it "returns a list of games" do
+      Game.create! field: 'Fenway Park', away_team: away_team_1, home_team: home_team
+      Game.create! field: 'Fenway Park', away_team: away_team_2, home_team: home_team
+
+      get games_path, as: :json
+      list_games = JSON(response.body)
+      expect(list_games.size).to eq(2)
     end
   end
 end
