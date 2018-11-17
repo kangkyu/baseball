@@ -29,4 +29,11 @@ RSpec.describe Score, type: :model do
       expect(score).not_to be_valid
     end
   end
+
+  context 'without point' do
+    let(:attributes) { {game_id: game.id, player_id: away_team_player_1.id} }
+    it 'is not valid' do
+      expect(score).not_to be_valid
+    end
+  end
 end

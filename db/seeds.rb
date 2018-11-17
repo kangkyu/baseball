@@ -3,3 +3,4 @@
 
 teams = Team.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 game = Game.create(field: 'A Stadium', away_team: teams.first, home_team: teams.second)
+players = Player.create([{name: 'Jimmy Johnson', team: teams.first}, {name: 'Ed Kesson', team: teams.second}])
