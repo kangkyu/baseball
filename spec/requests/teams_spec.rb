@@ -14,6 +14,20 @@ RSpec.describe "Teams", type: :request do
       list_teams = JSON(response.body)
       expect(list_teams.size).to eq(2)
     end
+
+    it "returns a list of teams with their win and lose count" do
+      team_1, team_2 = Team.create! [{ name: 'Mariners' }, { name: 'Brewers' }]
+      game_1 = Game.create! field: 'Miller Park', away_team: team_1, home_team: team_2
+      player_1, player_2 = team_2.players.create! [{name: 'Josh Hader'}, {name: 'Christian Yelich'}]
+      Score.create! player: player_1, game: game_1, point: 2
+      Score.create! player: player_2, game: game_1, point: 3
+
+      get teams_path, as: :json
+      list_teams = JSON(response.body)
+      expect(list_teams.size).to eq(2)
+      expect(list_teams[0]['wins']).to eq(1)
+      expect(list_teams[0]['loses']).to eq(0)
+    end
   end
 
   describe "GET /teams/:id" do

@@ -1,7 +1,7 @@
 class TeamsController < ApplicationController
 
   def index
-    @teams = Team.all # TODO: get a ranked list of teams
+    @teams = Team.all.sort_by {|t| -t.win_count}
   end
 
   def show
