@@ -3,6 +3,8 @@ class Game < ApplicationRecord
   belongs_to :away_team, class_name: 'Team'
   has_many :scores
 
+  validates :field, presence: true
+
   def teams
     Team.where('id = ? OR id = ?', away_team_id, home_team_id)
   end

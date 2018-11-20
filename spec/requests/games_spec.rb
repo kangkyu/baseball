@@ -61,4 +61,81 @@ RSpec.describe "Games", type: :request do
       expect(list_games[0]['score']).to eq('0:3')
     end
   end
+
+  describe "POST /games" do
+    let(:away_team) { Team.create! name: 'Angels' }
+    let(:home_team) { Team.create! name: 'Mariners' }
+
+    context "with valid params" do
+      it "creates a new game" do
+        expect {
+          post games_path, params: { game: { field: 'Safeco Field',
+            away_team_id: away_team.id, home_team_id: home_team.id } }, as: :json
+        }.to change(Game, :count).by(1)
+      end
+
+      it "renders a JSON response with the new game" do
+        post games_path, params: { game: { field: 'Safeco Field',
+            away_team_id: away_team.id, home_team_id: home_team.id } }, as: :json
+        expect(response).to have_http_status(201)
+        expect(response.content_type).to eq('application/json')
+      end
+    end
+
+    context "with invalid params" do
+      it "renders a JSON response with errors for the new game" do
+        post games_path, params: { game: { field: '',
+            away_team_id: away_team.id, home_team_id: home_team.id } }, as: :json
+        expect(response).to have_http_status(422)
+        expect(response.content_type).to eq('application/json')
+      end
+    end
+  end
+
+  describe "PUT /games/:id" do
+    let(:away_team) { Team.create! name: 'Angels' }
+    let(:home_team_1) { Team.create! name: 'Mariners' }
+    let(:home_team_2) { Team.create! name: 'Dodgers' }
+
+    context "with valid params" do
+      it "updates the game" do
+        game = Game.create! field: 'Safeco Field', away_team_id: away_team.id, home_team_id: home_team_1.id
+        expect {
+          put "/games/#{game.to_param}", params: { game: { field: 'Dodger Stadium',
+            away_team_id: away_team.id, home_team_id: home_team_2.id } }, as: :json
+          game.reload
+          expect(game.field).to eq('Dodger Stadium')
+        }.not_to change(Game, :count)
+      end
+
+      it "renders a JSON response with the updated game" do
+        game = Game.create! field: 'Safeco Field', away_team_id: away_team.id, home_team_id: home_team_1.id
+        put "/games/#{game.to_param}", params: { game: { home_team_id: home_team_2.id } }, as: :json
+        expect(response).to have_http_status(200)
+        expect(response.content_type).to eq('application/json')
+      end
+    end
+
+    context "with invalid params" do
+      it "renders a JSON response with errors for the the game" do
+        game = Game.create! field: 'Safeco Field', away_team_id: away_team.id, home_team_id: home_team_1.id
+        put game_path(game.to_param), params: { game: { field: '' } }
+        expect(response).to have_http_status(422)
+        expect(response.content_type).to eq('application/json')
+      end
+    end
+  end
+
+  describe "DELETE /games/:id" do
+    let(:away_team) { Team.create! name: 'Angels' }
+    let(:home_team) { Team.create! name: 'Mariners' }
+
+    it "destroys the existing game" do
+      game = Game.create! field: 'Safeco Field', away_team_id: away_team.id, home_team_id: home_team.id
+      expect {
+        delete "/games/#{game.to_param}"
+        expect(response).to have_http_status(204)
+      }.to change(Game, :count).by(-1)
+    end
+  end
 end

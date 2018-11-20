@@ -41,4 +41,73 @@ RSpec.describe "Players", type: :request do
       expect(list_players[0]['scores']).to eq(3)
     end
   end
+
+  describe "POST /players" do
+    let(:team) { Team.create name: 'Dodgers' }
+
+    context "with valid params" do
+      it "creates a new player" do
+        expect {
+          post players_path, params: { player: { name: 'Clayton Kershaw', team_id: team.id } }, as: :json
+        }.to change(Player, :count).by(1)
+      end
+
+      it "renders a JSON response with the new player" do
+        post players_path, params: { player: { name: 'Clayton Kershaw', team_id: team.id } }, as: :json
+        expect(response).to have_http_status(201)
+        expect(response.content_type).to eq('application/json')
+      end
+    end
+
+    context "with invalid params" do
+      it "renders a JSON response with errors for the new player" do
+        post players_path, params: { player: { name: '' } }, as: :json
+        expect(response).to have_http_status(422)
+        expect(response.content_type).to eq('application/json')
+      end
+    end
+  end
+
+  describe "PUT /players/:id" do
+    let(:team) { Team.create name: 'Dodgers' }
+
+    context "with valid params" do
+      it "updates the player" do
+        player = Player.create! name: 'Clayton Kershaw', team: team
+        expect {
+          put "/players/#{player.to_param}", params: { player: { name: 'Hyun-Jin Ryu' } }, as: :json
+          player.reload
+          expect(player.name).to eq('Hyun-Jin Ryu')
+        }.not_to change(Player, :count)
+      end
+
+      it "renders a JSON response with the updated player" do
+        player = Player.create! name: 'Clayton Kershaw', team: team
+        put "/players/#{player.to_param}", params: { player: { name: 'Hyun-Jin Ryu' } }, as: :json
+        expect(response).to have_http_status(200)
+        expect(response.content_type).to eq('application/json')
+      end
+    end
+
+    context "with invalid params" do
+      it "renders a JSON response with errors for the the player" do
+        player = Player.create! name: 'Clayton Kershaw', team: team
+        put player_path(player), params: { player: { name: '' } }
+        expect(response).to have_http_status(422)
+        expect(response.content_type).to eq('application/json')
+      end
+    end
+  end
+
+  describe "DELETE /players/:id" do
+    let(:team) { Team.create name: 'Dodgers' }
+
+    it "destroys the existing player" do
+      player = Player.create! name: 'Clayton Kershaw', team: team
+      expect {
+        delete "/players/#{player.to_param}"
+        expect(response).to have_http_status(204)
+      }.to change(Player, :count).by(-1)
+    end
+  end
 end
