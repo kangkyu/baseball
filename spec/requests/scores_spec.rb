@@ -14,14 +14,14 @@ RSpec.describe "Scores", type: :request do
         expect {
           post scores_path, params: {
             score: { game_id: game.id, player_id: away_team_player_1.id, point: 3 }
-          }, as: :json
+          }
         }.to change(Score, :count).by(1)
       end
 
       it "renders a JSON response with the new score" do
         post scores_path, params: {
           score: { game_id: game.id, player_id: away_team_player_1.id, point: 3 }
-        }, as: :json
+        }
         expect(response).to have_http_status(201)
         expect(response.content_type).to eq('application/json')
       end
@@ -31,7 +31,7 @@ RSpec.describe "Scores", type: :request do
       it "renders a JSON response with errors for the score" do
         post scores_path, params: {
           score: { game_id: '', player_id: '', point: 3 }
-        }, as: :json
+        }
         expect(response).to have_http_status(422)
         expect(response.content_type).to eq('application/json')
       end
